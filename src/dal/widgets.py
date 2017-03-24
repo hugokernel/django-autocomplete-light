@@ -159,8 +159,10 @@ class SelectMultiple(WidgetMixin, forms.SelectMultiple):
 class QuerySetSelectMixin(WidgetMixin):
     """QuerySet support for choices."""
 
+    model_field_name = 'pk'
     def filter_choices_to_render(self, selected_choices):
         """Filter out un-selected choices if choices is a QuerySet."""
         self.choices.queryset = self.choices.queryset.filter(
-            pk__in=[c for c in selected_choices if c]
+            **{'%s__in' % self.model_field_name:
+               [c for c in selected_choices if c]}
         )
